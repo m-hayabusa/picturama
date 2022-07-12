@@ -12,10 +12,13 @@ const metadataExifrOptions = {
         // We need `translateValues: false`, because we want a numeric `Orientation`, not something like `'Horizontal (normal)'`
     exif: true,
     xmp: true,
+    makerNote: true,
+    chunked: false
 }
 const fullExifrOptions = {
     mergeOutput: false,
     tiff: true,
+    chunked: false
 }
 for (const segment of allExifSegments) {
     fullExifrOptions[segment] = true
@@ -88,6 +91,28 @@ function extractMetaDataFromExif(exifTags: { [K: string]: any }): MetaData {
         iso = exifTags.ISO[0]
     }
 
+    const tags:string[] = []
+    const MakerNotes = (exifTags.MakerNote as string);
+    if (MakerNotes){
+        try {
+            let str = "";
+            if (MakerNotes.match("&quot;")) {
+                str = MakerNotes.replace(/&quot;/g,"\"");
+            } else {
+                str = Buffer.from(MakerNotes, 'base64').toString();
+            }
+
+            const vrcexifwriter = JSON.parse(str);
+
+            tags.push(`world:${vrcexifwriter.room.world_name}`);
+            vrcexifwriter.players.forEach((e:string)=>{
+                tags.push(`player:${e}`);
+            });
+        } catch(e) {
+            console.log(e);
+        }
+    }
+
     const metaData: MetaData = {
         imgWidth:     exifTags.ImageWidth,
         imgHeight:    exifTags.ImageHeight,
@@ -99,7 +124,7 @@ function extractMetaDataFromExif(exifTags: { [K: string]: any }): MetaData {
         createdAt:    exifTags.DateTimeOriginal || exifTags.DateTime || exifTags.CreateDate || exifTags.ModifyDate,
         orientation:  exifTags.Orientation || 1,
             // Details on orientation: https://www.impulseadventure.com/photo/exif-orientation.html
-        tags:         []
+        tags:         tags
     }
     if (exifTags.ExifImageWidth && exifTags.ExifImageHeight) {
         // We don't trust the width and height writted to EXIF data, since some cameras switch width and height when
