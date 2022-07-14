@@ -57,7 +57,7 @@
     "build": "set NODE_ENV=development && yarn webpack",
     "build-production": "set NODE_ENV=production && yarn webpack",
     "i18n": "node src/script/check-i18n.mjs",
-    "start-no-build": "set PICTURAMA_DEV_MODE=true && yarn electron .",
+    "start-no-build": "chcp 65001 && set PICTURAMA_DEV_MODE=true && yarn electron .",
     "package-dir": "electron-builder --dir",
     "package": "electron-builder",
     "release": "yarn run clean && yarn run i18n && yarn run build-production && yarn run package",
