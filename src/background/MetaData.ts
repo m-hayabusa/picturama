@@ -105,8 +105,13 @@ function extractMetaDataFromExif(exifTags: { [K: string]: any }): MetaData {
             const vrcexifwriter = JSON.parse(str);
 
             tags.push(`world:${vrcexifwriter.room.world_name}`);
+
+            const alreadyAdded:string[] = []
             vrcexifwriter.players.forEach((e:string)=>{
-                tags.push(`player:${e}`);
+                if (!alreadyAdded.find((s)=>(s === e))){
+                    tags.push(`player:${e}`);
+                    alreadyAdded.push(e);
+                }
             });
         } catch(e) {
             console.log(e);
