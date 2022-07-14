@@ -101,7 +101,8 @@ function createWhereForFilter(filter: PhotoFilter): { sql: string, params: any[]
 
 export async function fetchPhotoDetail(photoId: PhotoId): Promise<PhotoDetail> {
     const [ tags, versions ] = await Promise.all([
-        DB().queryColumn<string>('title', 'select title from tags where id in (select tag_id from photos_tags where photo_id = ?) order by slug', photoId),
+        DB().queryColumn<string>('title', 'select title from tags where id in (select tag_id from photos_tags where photo_id = ?) order by slug', photoId).then((e)=>(
+            e.map((s)=>decodeURIComponent(s)))),
         DB().query<Version>('select * from versions where photo_id = ? order by version', photoId)
     ])
 

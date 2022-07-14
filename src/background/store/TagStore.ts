@@ -24,7 +24,12 @@ export async function fetchTags(): Promise<Tag[]> {
     }
 
     tagsHaveChanged = false
-    return DB().query<Tag>('select * from tags order by slug')
+    return DB().query<Tag>('select * from tags order by slug').then((val) => (
+        val.map(tag => {
+            tag.title = decodeURIComponent(tag.title)
+            return tag
+        }))
+    )
 }
 
 
@@ -34,6 +39,7 @@ export async function fetchTags(): Promise<Tag[]> {
  * @return Whether `fetchTags` should be called (the global list of tags should be reloaded).
  */
 export function storePhotoTags(photoId: PhotoId, photoTags: string[]): Promise<boolean> {
+    photoTags = photoTags.map(e => encodeURIComponent(e))
     return storePhotoTagsQueue.addJob({ photoId, photoTags })
 }
 
