@@ -113,7 +113,6 @@
     "typesafe-actions": "^5.1.0"
   },
   "optionalDependencies": {
-    "libraw": "file:submodules/node-libraw",
     "node-libheif": "^1.12.0-rc.1"
   },
   "devDependencies": {
