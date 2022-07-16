@@ -66,7 +66,7 @@ export default {
     ImportProgressButton_resume: '再開',
     ImportProgressButton_pause: '中断',
 
-    ImportController_importFinished: '{0} 枚の画像を {1} から取り込みました',
+    ImportController_importFinished: '{0}枚の画像を{1}で取り込みました',
 
     Library_noPhotos_title: '新しい画像は追加されませんでした',
     Library_noSettings_message: '上の {0} をクリックすると設定が開けます',
@@ -134,7 +134,7 @@ export default {
     PhotoInfo_copyCoordinates: '座標をコピー',
     PhotoInfo_noSelection_title: '画像が選択されていません',
     PhotoInfo_noSelection_message: '左側で画像を選択してください',
-    PhotoInfo_exifData: 'Exifデー5ア',
+    PhotoInfo_exifData: 'Exifデータ',
     PhotoInfo_show: '表示',
     PhotoInfo_hide: '隠す',
     PhotoInfo_showAll: '全て表示',
