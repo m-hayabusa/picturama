@@ -1,4 +1,4 @@
-import { clipboard } from 'electron'
+import electron, { clipboard } from 'electron'
 import classNames from 'classnames'
 import React from 'react'
 import { Button, Icon, NonIdealState, Popover, Position, Classes, Menu, MenuItem, MaybeElement } from '@blueprintjs/core'
@@ -14,6 +14,7 @@ import BackgroundClient from 'app/BackgroundClient'
 import { InfoPhotoData } from 'app/state/StateTypes'
 import { FetchState } from 'app/UITypes'
 import MiniWorldMap from 'app/ui/widget/MiniWorldMap'
+import OGCard from 'app/ui/widget/OGCard'
 import Toolbar from 'app/ui/widget/Toolbar'
 import FaIcon from 'app/ui/widget/icon/FaIcon'
 
@@ -48,6 +49,7 @@ export interface Props {
 
 interface State {
     showExif: boolean
+    showOGCard: boolean
     showAllOfExifSegment: { [K in ExifSegment]?: true }
 }
 
@@ -55,9 +57,10 @@ export default class PhotoInfo extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-        bindMany(this, 'showPhotoInFolder', 'copyPhotoPath', 'copyCoordinates', 'toggleExif')
+        bindMany(this, 'showPhotoInFolder', 'copyPhotoPath', 'copyCoordinates', 'toggleExif', 'toggleOGCard')
         this.state = {
             showExif: false,
+            showOGCard: false,
             showAllOfExifSegment: {},
         }
     }
@@ -92,6 +95,9 @@ export default class PhotoInfo extends React.Component<Props, State> {
 
     private toggleExif() {
         this.setState({ showExif: !this.state.showExif })
+    }
+    private toggleOGCard() {
+        this.setState({ showOGCard: !this.state.showOGCard })
     }
 
     private toggleShowAllOfExifSegment(segment: ExifSegment) {
@@ -178,6 +184,30 @@ export default class PhotoInfo extends React.Component<Props, State> {
                             </div>
                         </div>
                     }
+                    {metaData && (metaData.worldName && metaData.worldId) &&
+                        <div className="PhotoInfo-infoRow">
+                            <Icon className="PhotoInfo-infoIcon" icon="map" iconSize={infoIconSize} />
+                            <div className="PhotoInfo-infoBody PhotoInfo-worldData">
+                                <h1 className="hasColumns">
+                                    <div onClick={()=>{electron.shell.openExternal(`https://vrchat.com/home/launch?worldId=${metaData.worldId}`)}}>{metaData.worldName}</div>
+                                    <Button
+                                        text={msg(state.showOGCard ? 'PhotoInfo_hide' : 'PhotoInfo_show')}
+                                        onClick={this.toggleOGCard}
+                                    />
+                                </h1>
+                                {state.showOGCard &&
+                                <div className="PhotoInfo-minorInfo hasColumns">
+                                    <div>
+                                        <OGCard
+                                            url={`https://vrchat.com/home/world/${metaData.worldId}`}
+                                            width={215}
+                                        />
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    }
                     <div className="PhotoInfo-infoRow">
                         <FaIcon className="PhotoInfo-infoIcon" name="tags" style={{ fontSize: infoIconSize }} />
                         <TagEditor
@@ -237,7 +267,7 @@ export default class PhotoInfo extends React.Component<Props, State> {
                 />
             )
         }
-    
+
         return (
             <div className={classNames(props.className, 'PhotoInfo bp3-dark')} style={props.style}>
                 <Toolbar className="PhotoInfo-topBar">
@@ -305,7 +335,7 @@ export default class PhotoInfo extends React.Component<Props, State> {
             </div>
         )
     }
-    
+
 }
 
 

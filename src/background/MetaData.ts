@@ -91,7 +91,9 @@ function extractMetaDataFromExif(exifTags: { [K: string]: any }): MetaData {
         iso = exifTags.ISO[0]
     }
 
-    const tags:string[] = []
+    let worldName: string | undefined;
+    let worldId: string | undefined;
+    const tags: string[] = []
     const MakerNotes = (exifTags.MakerNote as string);
     if (MakerNotes){
         try {
@@ -103,6 +105,8 @@ function extractMetaDataFromExif(exifTags: { [K: string]: any }): MetaData {
             }
 
             const vrcexifwriter = JSON.parse(str);
+            worldId = vrcexifwriter.room.world_id;
+            worldName = vrcexifwriter.room.world_name;
 
             tags.push(`world:${vrcexifwriter.room.world_name}`);
 
@@ -129,7 +133,9 @@ function extractMetaDataFromExif(exifTags: { [K: string]: any }): MetaData {
         createdAt:    exifTags.DateTimeOriginal || exifTags.DateTime || exifTags.CreateDate || exifTags.ModifyDate,
         orientation:  exifTags.Orientation || 1,
             // Details on orientation: https://www.impulseadventure.com/photo/exif-orientation.html
-        tags:         tags
+        tags:         tags,
+        worldId:      worldId,
+        worldName:    worldName
     }
     if (exifTags.ExifImageWidth && exifTags.ExifImageHeight) {
         // We don't trust the width and height writted to EXIF data, since some cameras switch width and height when

@@ -221,6 +221,8 @@ export interface MetaData {
     /** Details on orientation: https://www.impulseadventure.com/photo/exif-orientation.html */
     orientation:   ExifOrientation
     tags:          string[]
+    worldId?:      string
+    worldName?:    string
 }
 
 
