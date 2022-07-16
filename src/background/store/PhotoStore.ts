@@ -63,7 +63,7 @@ export async function fetchSectionPhotos(sectionIds: PhotoSectionId[], filter: P
 
     const filterWhere = createWhereForFilter(filter)
     const allPhotos = await DB().query<Photo>(
-        `select * from photos where date_section in (${toSqlStringCsv(sectionIds)}) and ${filterWhere.sql} order by created_at asc`,
+        `select * from photos where date_section in (${toSqlStringCsv(sectionIds)}) and ${filterWhere.sql} order by created_at desc`,
         ...filterWhere.params)
     for (const photo of allPhotos) {
         const sectionId: PhotoSectionId = photo.date_section
