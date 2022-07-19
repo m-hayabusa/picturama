@@ -3,7 +3,7 @@ import { Button } from '@blueprintjs/core'
 
 import { Photo, PhotoSectionById, PhotoSectionId, PhotoFilter } from 'common/CommonTypes'
 import CancelablePromise from 'common/util/CancelablePromise'
-import { getNonRawPath } from 'common/util/DataUtil'
+import { getMasterPath, getNonRawPath, getThumbnailPath } from 'common/util/DataUtil'
 import { addErrorCode } from 'common/util/LangUtil'
 import { fileUrlFromPath } from 'common/util/TextUtil'
 
@@ -59,6 +59,9 @@ function createDefaultProps(context: TestContext): Props {
         fetchTags: action('fetchTags'),
         getGridLayout: getGridLayoutWithoutStoreUpdate,
         getThumbnailSrc: (photo: Photo) => fileUrlFromPath(getNonRawPath(photo)),
+        getMasterPath: (photo: Photo) => getMasterPath(photo),
+        getThumbnailPath: (photoId: number) => getThumbnailPath(photoId),
+        startDrag: (fileName: string, thumbnailPath: string) => ()=>{},
         createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => {
             if (photo.master_filename === 'dummy') {
                 return new CancelablePromise<string>(() => {})

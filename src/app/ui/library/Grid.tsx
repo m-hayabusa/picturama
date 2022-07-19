@@ -40,6 +40,9 @@ interface Props {
     librarySelectionController: LibrarySelectionController
     getGridLayout: GetGridLayoutFunction
     getThumbnailSrc: (photo: Photo) => string
+    getMasterPath: (photo: Photo) => string
+    getThumbnailPath: (photoId: number) => string
+    startDrag: (fileName: string, thumbnailPath: string) => void
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => CancelablePromise<string>
     setDetailPhotoById: (sectionId: PhotoSectionId, photoId: PhotoId) => void
 }
@@ -231,6 +234,9 @@ export default class Grid extends React.Component<Props, State> {
                     sectionPreselection={getSectionPreselection(sectionIndex, props.preselectionRange)}
                     librarySelectionController={props.librarySelectionController}
                     getThumbnailSrc={props.getThumbnailSrc}
+                    getMasterPath={props.getMasterPath}
+                    getThumbnailPath={props.getThumbnailPath}
+                    startDrag={props.startDrag}
                     createThumbnail={props.createThumbnail}
                     showPhotoDetails={this.showPhotoDetails}
                 />

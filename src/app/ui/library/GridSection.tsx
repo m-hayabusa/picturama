@@ -33,6 +33,9 @@ export interface Props {
     sectionPreselection?: SectionPreselection
     librarySelectionController: LibrarySelectionController
     getThumbnailSrc: (photo: Photo) => string
+    getMasterPath: (photo: Photo) => string
+    getThumbnailPath: (photoId: number) => string
+    startDrag: (fileName: string, thumbnailPath: string) => void
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => CancelablePromise<string>
     showPhotoDetails(sectionId: PhotoSectionId, photoId: PhotoId): void
 }
@@ -54,7 +57,7 @@ export default class GridSection extends React.Component<Props> {
         if (!props.layout.boxes || props.layout.fromBoxIndex == null || props.layout.toBoxIndex == null) {
             return
         }
-        
+
         const { activePhotoId } = props
         const toBoxIndex = props.layout.toBoxIndex
         let elems: JSX.Element[] = []
@@ -74,6 +77,9 @@ export default class GridSection extends React.Component<Props> {
                         preselected={getPhotoPreselection(photoIndex, props.sectionPreselection)}
                         librarySelectionController={props.librarySelectionController}
                         getThumbnailSrc={props.getThumbnailSrc}
+                        getMasterPath={props.getMasterPath}
+                        getThumbnailPath={props.getThumbnailPath}
+                        startDrag={props.startDrag}
                         createThumbnail={props.createThumbnail}
                         showPhotoDetails={props.showPhotoDetails}
                     />

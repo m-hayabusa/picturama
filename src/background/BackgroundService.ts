@@ -47,6 +47,14 @@ export function init(mainWin: BrowserWindow, newUiConfig: UiConfig) {
             })
     })
 
+    ipcMain.on('ondragstart', (event, filePath:string, thumbnailPath:string) => {
+        console.log(filePath, thumbnailPath)
+        event.sender.startDrag({
+            file: filePath,
+            icon: thumbnailPath
+        })
+    })
+
     ipcMain.on('executeBackgroundAction', (event, callId: number, action: string, params: any) => {
         executeBackgroundAction(action, params)
             .then(result => {

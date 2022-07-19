@@ -5,7 +5,7 @@ import { mockLibrarySelectionController, testDarkPhoto, testLightPhoto } from 't
 
 import { Photo, PhotoSectionId } from 'common/CommonTypes'
 import CancelablePromise from 'common/util/CancelablePromise'
-import { getNonRawPath } from 'common/util/DataUtil'
+import { getMasterPath, getNonRawPath, getThumbnailPath } from 'common/util/DataUtil'
 import ParameterTestDecorator from 'test-ui/util/ParameterTestDecorator'
 import { fileUrlFromPath } from 'common/util/TextUtil'
 
@@ -25,6 +25,9 @@ const defaultPropsCommon: Omit<Props, 'photo' | 'layoutBox' | 'librarySelection
     isActive: false,
     isSelected: false,
     getThumbnailSrc: (photo: Photo) => fileUrlFromPath(getNonRawPath(photo)),
+    getMasterPath: (photo: Photo) => getMasterPath(photo),
+    getThumbnailPath: (photoId: number) => getThumbnailPath(photoId),
+    startDrag: (fileName: string, thumbnailPath: string) => ()=>{},
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => {
         if (photo.master_filename === 'dummy') {
             return new CancelablePromise<string>(() => {})

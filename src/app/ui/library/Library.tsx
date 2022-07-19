@@ -15,6 +15,8 @@ import { defaultLibrarySelectionController, LibrarySelectionController } from 'a
 import { GetGridLayoutFunction, getGridLayoutAndUpdateStore, createThumbnail } from 'app/controller/LibraryController'
 import { PhotoActionController, defaultPhotoActionController } from 'app/controller/PhotoActionController'
 import { fetchTotalPhotoCount, fetchSections, getThumbnailSrc } from 'app/controller/PhotoController'
+import { getMasterPath, getThumbnailPath } from 'common/util/DataUtil'
+import { startDrag } from 'common/util/DragFile'
 import { fetchTags, setPhotoTags } from 'app/controller/PhotoTagController'
 import { setGridRowHeightAction, setShowInfoAction } from 'app/state/actions'
 import { getInfoPhoto, getPreselectionRange, getTagTitles } from 'app/state/selectors'
@@ -70,6 +72,9 @@ interface DispatchProps {
     fetchTags(): void
     getGridLayout: GetGridLayoutFunction
     getThumbnailSrc: (photo: Photo) => string
+    getMasterPath: (photo: Photo) => string
+    getThumbnailPath: (photoId: number) => string
+    startDrag: (fileName: string, thumbnailPath: string) => void
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => CancelablePromise<string>
     setGridRowHeight: (gridRowHeight: number) => void
     setDetailPhotoById: (sectionId: PhotoSectionId, photoId: PhotoId) => void
@@ -216,6 +221,9 @@ export class Library extends React.Component<Props> {
                             librarySelectionController={props.librarySelectionController}
                             getGridLayout={props.getGridLayout}
                             getThumbnailSrc={props.getThumbnailSrc}
+                            getMasterPath={props.getMasterPath}
+                            getThumbnailPath={props.getThumbnailPath}
+                            startDrag={props.startDrag}
                             createThumbnail={props.createThumbnail}
                             setDetailPhotoById={props.setDetailPhotoById}
                         />
@@ -277,6 +285,9 @@ const Connected = connect<StateProps, DispatchProps, OwnProps, AppState>(
         fetchTags,
         getGridLayout: getGridLayoutAndUpdateStore,
         getThumbnailSrc,
+        getMasterPath,
+        getThumbnailPath,
+        startDrag,
         createThumbnail,
         setDetailPhotoById,
         setPhotoTags,
