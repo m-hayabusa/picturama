@@ -51,8 +51,8 @@
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "clean": "rm -rf dist dist-package",
-    "clean-package": "rm -rf dist-package",
+    "clean": "rmdir /s /q dist dist-package",
+    "clean-package": "rmdir /s /q dist-package",
     "start": "yarn run build && yarn run start-no-build",
     "watch": "set NODE_ENV=development && yarn webpack -w",
     "build": "set NODE_ENV=development && yarn webpack",
