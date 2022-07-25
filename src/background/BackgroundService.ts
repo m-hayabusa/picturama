@@ -17,6 +17,7 @@ import { fetchSettings, storeSettings } from 'background/store/SettingsStore'
 import { fetchTags, storePhotoTags } from 'background/store/TagStore'
 import { createThumbnail, deleteThumbnail } from 'background/store/ThumbnailStore'
 import { fsExists, fsStat } from 'background/util/FileUtil'
+import { dragFile } from 'background/util/DragFile'
 
 let decodeHeifBuffer: ((buffer: Buffer) => Promise<DecodedHeifImage>) | null = null
 try {
@@ -47,13 +48,7 @@ export function init(mainWin: BrowserWindow, newUiConfig: UiConfig) {
             })
     })
 
-    ipcMain.on('ondragstart', (event, filePath:string, thumbnailPath:string) => {
-        console.log(filePath, thumbnailPath)
-        event.sender.startDrag({
-            file: filePath,
-            icon: thumbnailPath
-        })
-    })
+    ipcMain.on('ondragstart', dragFile);
 
     ipcMain.on('executeBackgroundAction', (event, callId: number, action: string, params: any) => {
         executeBackgroundAction(action, params)

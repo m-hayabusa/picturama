@@ -42,7 +42,7 @@ export interface Props {
     getThumbnailSrc: (photo: Photo) => string
     getMasterPath: (photo: Photo) => string
     getThumbnailPath: (photoId: number) => string
-    startDrag: (fileName: string, thumbnailPath: string) => void
+    startDrag: (photo: Photo) => void
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => CancelablePromise<string>
     showPhotoDetails(sectionId: PhotoSectionId, photoId: PhotoId): void
 }
@@ -270,7 +270,7 @@ export default class Picture extends React.Component<Props, State> {
                 onMouseLeave={this.onMouseLeave}
                 onClick={props.inSelectionMode ? this.onToggleSelection : this.onSetPhotoActive}
                 onDoubleClick={props.inSelectionMode ? undefined : this.onShowDetails}
-                onDragStart={(e)=>{e.preventDefault();  this.props.startDrag (this.props.getMasterPath(this.props.photo), this.props.getThumbnailPath(this.props.photo.id))}}
+                onDragStart={(e)=>{e.preventDefault(); this.props.startDrag (this.props.photo);}}
             >
                 {state.thumbnailSrc &&
                     <img

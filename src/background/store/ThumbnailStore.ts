@@ -10,6 +10,8 @@ import { fsExists, fsUnlink, fsWriteFile } from 'background/util/FileUtil'
 
 import { fetchPhotoWorkOfPhoto } from './PhotoWorkStore'
 
+import Sharp from "sharp"
+import { updatePhotos } from 'background/store/PhotoStore'
 
 // Default row height of 'justified-layout' is 320px.
 // Max width is relatively high in order to get most panorama images with full row height.
@@ -50,6 +52,15 @@ async function processNextCreateThumbnail(job: { photo: Photo }): Promise<void> 
 
     await fsWriteFile(thumbnailPath, thumbnailBinaryString, { encoding: 'binary' })
     console.log('Stored ' + thumbnailPath)
+    /*
+      const angle = photoWork.rotationTurns ? photoWork.rotationTurns * 90 : undefined
+
+    await Sharp(masterPath)
+        .rotate(angle)
+        .resize({width: maxThumbnailSize.width, height: maxThumbnailSize.height, fit: "inside"})
+        .webp().toFile(thumbnailPath)
+
+        */
 }
 
 

@@ -42,7 +42,7 @@ interface Props {
     getThumbnailSrc: (photo: Photo) => string
     getMasterPath: (photo: Photo) => string
     getThumbnailPath: (photoId: number) => string
-    startDrag: (fileName: string, thumbnailPath: string) => void
+    startDrag: (photo: Photo) => void
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => CancelablePromise<string>
     setDetailPhotoById: (sectionId: PhotoSectionId, photoId: PhotoId) => void
 }

@@ -74,7 +74,7 @@ interface DispatchProps {
     getThumbnailSrc: (photo: Photo) => string
     getMasterPath: (photo: Photo) => string
     getThumbnailPath: (photoId: number) => string
-    startDrag: (fileName: string, thumbnailPath: string) => void
+    startDrag: (photo: Photo) => void
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => CancelablePromise<string>
     setGridRowHeight: (gridRowHeight: number) => void
     setDetailPhotoById: (sectionId: PhotoSectionId, photoId: PhotoId) => void

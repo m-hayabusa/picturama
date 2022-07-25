@@ -36,7 +36,7 @@ const defaultProps: Props = {
     getThumbnailSrc: (photo: Photo) => fileUrlFromPath(getNonRawPath(photo)),
     getMasterPath: (photo: Photo) => getMasterPath(photo),
     getThumbnailPath: (photoId: number) => getThumbnailPath(photoId),
-    startDrag: (fileName: string, thumbnailPath: string) => ()=>{},
+    startDrag: (photo: Photo) => ()=>{},
     createThumbnail: (sectionId: PhotoSectionId, photo: Photo) => {
         if (photo.master_filename === 'dummy') {
             return new CancelablePromise<string>(() => {})
