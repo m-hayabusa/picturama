@@ -1,7 +1,7 @@
 {
   "name": "picturama",
   "productName": "Picturama",
-  "version": "1.4.0-dev-vrcExif0.1",
+  "version": "1.4.0-dev-vrcExif0.2",
   "description": "Digital image organizer powered by the web",
   "author": "Loïc Nogues <nogues.loic@gmail.com>, Til Schneider <github@murfman.de>",
   "license": "MIT",
