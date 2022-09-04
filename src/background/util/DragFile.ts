@@ -18,7 +18,7 @@ export function dragFile(event: Electron.IpcMainEvent, photo: Photo) {
         folderPath: config.tmp
     }
 
-    let filePath = `${config.tmp}/${photo.master_filename}`
+    let filePath = `${config.tmp}/${photo.master_filename.replace(/([^.]+)$/, exportOptions.format)}`
     let iconPath = `${config.tmp}/drag-thumb.png`
 
     if (os.platform() === 'win32') {
