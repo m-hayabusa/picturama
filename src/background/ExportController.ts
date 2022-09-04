@@ -1,5 +1,6 @@
 // import piexif from 'piexifjs'
 import Sharp from "sharp"
+import { execFile } from 'child_process';
 
 import { getMasterPath } from 'common/util/DataUtil'
 import { Size } from 'common/util/GeometryTypes'
@@ -116,14 +117,20 @@ export async function exportPhoto(photo: Photo, photoIndex: number, options: Pho
 
     await image.toFormat(options.format).toFile(exportFilePath)
 
-    // if (options.withMetadata && options.format === 'jpg' && jpgExtensionRE.test(masterPath)) {
-    //     const masterImageBuffer = await fsReadFile(masterPath)
-    //     const masterImageData = masterImageBuffer.toString('binary')
-    //     const metaData = piexif.load(masterImageData)
-
-    //     await exiftool.write (exportFilePath, await exiftool.read(masterPath))
-    //     imageBinaryString = piexif.insert(piexif.dump(metaData), imageBinaryString)
-    // }
+    if (options.withMetadata) {
+        try{
+            await execFile(process.platform == "win32" ? "./node_modules/exiftool.exe/vendor/exiftool.exe" : "exiftool", [
+                "-charset", "utf8",
+                "-overwrite_original",
+                "-tagsFromFile", masterPath,
+                exportFilePath
+            ]).stdout?.on("data", (data: string) => {
+                console.log(data);
+            });
+        }catch(e){
+            console.warn(e);
+        }
+    }
 
     const masterStat = await fsStat(masterPath)
     await fsUtimes(exportFilePath, masterStat.atime, masterStat.mtime)
