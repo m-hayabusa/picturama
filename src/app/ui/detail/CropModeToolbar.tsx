@@ -91,6 +91,7 @@ export default class CropModeToolbar extends React.Component<Props> {
         return (
             <Toolbar
                 className={classnames(props.className, 'CropModeToolbar')}
+                isTopBar={true}
                 isLeft={true}
                 isRight={true}
             >
