@@ -3,6 +3,7 @@ import Sharp from "sharp"
 import { Photo, PhotoExportOptions } from 'common/CommonTypes'
 import { exportPhoto } from 'background/ExportController'
 import os from 'os'
+import ForegroundClient from 'background/ForegroundClient'
 
 
 export function dragFile(event: Electron.IpcMainEvent, photo: Photo) {
@@ -33,6 +34,7 @@ export function dragFile(event: Electron.IpcMainEvent, photo: Photo) {
             .resize({ height: 128, width: 128, fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 0 } })
             .png().toFile(iconPath)
             .then(()=>{
+                ForegroundClient.exportDone();
                 event.sender.startDrag({
                     file: filePath,
                     icon: iconPath

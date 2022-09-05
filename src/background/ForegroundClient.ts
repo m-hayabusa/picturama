@@ -77,6 +77,10 @@ export default {
     async renderImage(imagePath: string, maxSize: Size | null, options: PhotoRenderOptions): Promise<BinaryString> {
         return callOnForeground('renderImage', { imagePath, maxSize, options })
     },
+
+    async exportDone() {
+        return callOnForeground('exportDone');
+    }
 }
 
 

@@ -10,6 +10,7 @@ import { setTags } from 'app/controller/PhotoTagController'
 import { renderPhoto, renderImage } from 'app/renderer/PhotoRenderer'
 import { setFullScreenAction, initDevicesAction, addDeviceAction, removeDeviceAction, emptyTrashAction, openSettingsAction } from 'app/state/actions'
 import store from 'app/state/store'
+import { endDrag } from 'common/util/DragFile'
 
 
 assertRendererProcess()
@@ -56,6 +57,8 @@ async function executeForegroundAction(action: string, params: any): Promise<any
     } else if (action === 'renderImage') {
         // We send the image as binary string (not as node Buffer), because all data is converted to JSON which doesn't support Buffers
         return renderImage(params.imagePath, params.maxSize, params.options)
+    } else if (action === 'exportDone'){
+        return endDrag();
     } else {
         throw new Error('Unknown foreground action: ' + action)
     }
