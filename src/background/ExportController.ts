@@ -1,5 +1,3 @@
-// import piexif from 'piexifjs'
-import Sharp from "sharp"
 import { execFile } from 'child_process';
 
 import { getMasterPath } from 'common/util/DataUtil'
@@ -8,14 +6,12 @@ import { parsePath } from 'common/util/TextUtil'
 import { Photo, PhotoExportOptions } from 'common/CommonTypes'
 
 import { fetchPhotoWorkOfPhoto } from 'background/store/PhotoWorkStore'
-import { fsExists, fsStat, fsUtimes } from 'background/util/FileUtil'
-
-
-const jpgExtensionRE = new RegExp(`\\.jpe?g$`, 'i')
+import { fsExists, fsWriteFile, fsStat, fsUtimes } from 'background/util/FileUtil'
+import ForegroundClient from 'background/ForegroundClient'
 
 
 export async function exportPhoto(photo: Photo, photoIndex: number, options: PhotoExportOptions, overwrite = false): Promise<void> {
-    const masterPath = getMasterPath(photo);
+    const masterPath = getMasterPath(photo)
 
     let maxSize: Size | null
     switch (options.size) {
@@ -51,6 +47,7 @@ export async function exportPhoto(photo: Photo, photoIndex: number, options: Pho
     }
 
     const photoWork = await fetchPhotoWorkOfPhoto(photo)
+    let imageBinaryString = await ForegroundClient.renderPhoto(photo, photoWork, maxSize, options)
 
     let exportFileBasePath: string
     switch (options.fileNameStyle) {
@@ -74,48 +71,7 @@ export async function exportPhoto(photo: Photo, photoIndex: number, options: Pho
         counter++
     } while (!overwrite && await fsExists(exportFilePath))
 
-    Sharp.cache(false)
-    let image = Sharp(masterPath)
-
-    if (photoWork.rotationTurns)
-        image = image.rotate(photoWork.rotationTurns * 90)
-
-    if (photoWork.cropRect) {
-        let size: Sharp.Region = {
-            left: 0,
-            top: 0,
-            width: 0,
-            height: 0
-        };
-
-        let width:number, height:number
-
-        if (photoWork.rotationTurns === 1 || photoWork.rotationTurns === 3) {
-            width = photo.master_height
-            height = photo.master_width
-        } else {
-            width = photo.master_width
-            height = photo.master_height
-        }
-
-        size.left = width / 2 + photoWork.cropRect.x
-        size.top = height / 2 + photoWork.cropRect.y
-        size.width = photoWork.cropRect.width
-        size.height = photoWork.cropRect.height
-
-        size.left = Math.round(size.left)
-        size.top = Math.round(size.top)
-        size.width = Math.round(size.width)
-        size.height = Math.round(size.height)
-
-        image = image.extract(size)
-    }
-
-    if (maxSize) {
-        image = image.resize(maxSize.width, maxSize.height)
-    }
-
-    await image.toFormat(options.format).toFile(exportFilePath)
+    await fsWriteFile(exportFilePath, imageBinaryString, 'binary')
 
     if (options.withMetadata) {
         try{
