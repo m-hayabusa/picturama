@@ -160,4 +160,10 @@ export default {
     TagEditor_addTag: 'Add tag...',
     TagEditor_error_tagExists: 'Please enter a new tag',
 
+    VRChat_permission_public: 'Public',
+    VRChat_permission_hidden: 'Friends+',
+    VRChat_permission_friends: 'Friends',
+    VRChat_permission_private_plus: 'Invite+',
+    VRChat_permission_private: 'Invite',
+    VRChat_permission_group: 'Group',
 }

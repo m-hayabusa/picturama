@@ -49,7 +49,8 @@ export interface Props {
 
 interface State {
     showExif: boolean
-    showOGCard: boolean
+    showWorldOGCard: boolean
+    showOrganiserOGCard: boolean
     showAllOfExifSegment: { [K in ExifSegment]?: true }
 }
 
@@ -57,10 +58,11 @@ export default class PhotoInfo extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-        bindMany(this, 'showPhotoInFolder', 'copyPhotoPath', 'copyCoordinates', 'toggleExif', 'toggleOGCard')
+        bindMany(this, 'showPhotoInFolder', 'copyPhotoPath', 'copyCoordinates', 'toggleExif', 'toggleWorldOGCard', 'toggleOrganiserOGCard')
         this.state = {
             showExif: false,
-            showOGCard: false,
+            showWorldOGCard: false,
+            showOrganiserOGCard: false,
             showAllOfExifSegment: {},
         }
     }
@@ -96,8 +98,13 @@ export default class PhotoInfo extends React.Component<Props, State> {
     private toggleExif() {
         this.setState({ showExif: !this.state.showExif })
     }
-    private toggleOGCard() {
-        this.setState({ showOGCard: !this.state.showOGCard })
+    private toggleWorldOGCard() {
+        console.log(this);
+        this.setState({ showWorldOGCard: !this.state.showWorldOGCard })
+    }
+    private toggleOrganiserOGCard() {
+        console.log(this);
+        this.setState({ showOrganiserOGCard: !this.state.showOrganiserOGCard })
     }
 
     private toggleShowAllOfExifSegment(segment: ExifSegment) {
@@ -184,6 +191,31 @@ export default class PhotoInfo extends React.Component<Props, State> {
                             </div>
                         </div>
                     }
+                    {metaData && (metaData.organizer || metaData.permission === "public") && metaData.permission &&
+                        <div className="PhotoInfo-infoRow">
+                            <Icon className="PhotoInfo-infoIcon" icon="crown" iconSize={infoIconSize} />
+                            <div className="PhotoInfo-infoBody PhotoInfo-worldData">
+                                <h1 className="hasColumns">
+                                    <div onClick={()=>{if (metaData.organizer) electron.shell.openExternal(`https://vrchat.com/home/${metaData.organizer.startsWith("grp") ? "group" : "user"}/${metaData.organizer}`)}}> {msg(this.instancePermissionToKey(metaData.permission))} </div>
+                                    {metaData.organizer && <Button
+                                        text={msg(state.showOrganiserOGCard ? 'PhotoInfo_hide' : 'PhotoInfo_show')}
+                                        onClick={this.toggleOrganiserOGCard}
+                                    />
+                                    }
+                                </h1>
+                                {state.showOrganiserOGCard && metaData.organizer &&
+                                <div className="PhotoInfo-minorInfo hasColumns">
+                                    <div>
+                                        <OGCard
+                                            url={`https://vrchat.com/home/${metaData.organizer.startsWith("grp") ? "group" : "user"}/${metaData.organizer}`}
+                                            width={215}
+                                        />
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    }
                     {metaData && (metaData.worldName && metaData.worldId) &&
                         <div className="PhotoInfo-infoRow">
                             <Icon className="PhotoInfo-infoIcon" icon="map" iconSize={infoIconSize} />
@@ -191,11 +223,11 @@ export default class PhotoInfo extends React.Component<Props, State> {
                                 <h1 className="hasColumns">
                                     <div onClick={()=>{electron.shell.openExternal(`https://vrchat.com/home/launch?worldId=${metaData.worldId}`)}}>{metaData.worldName}</div>
                                     <Button
-                                        text={msg(state.showOGCard ? 'PhotoInfo_hide' : 'PhotoInfo_show')}
-                                        onClick={this.toggleOGCard}
+                                        text={msg(state.showWorldOGCard ? 'PhotoInfo_hide' : 'PhotoInfo_show')}
+                                        onClick={this.toggleWorldOGCard}
                                     />
                                 </h1>
-                                {state.showOGCard &&
+                                {state.showWorldOGCard &&
                                 <div className="PhotoInfo-minorInfo hasColumns">
                                     <div>
                                         <OGCard
@@ -280,6 +312,17 @@ export default class PhotoInfo extends React.Component<Props, State> {
                 </div>
             </div>
         )
+    }
+
+    private instancePermissionToKey(permission:  'private' | 'private+' | 'friends' | 'hidden' | 'group' | 'public') {
+        switch (permission){
+            case "public": return `VRChat_permission_public`;
+            case "hidden": return `VRChat_permission_hidden`;
+            case "friends": return `VRChat_permission_friends`;
+            case "private+": return `VRChat_permission_private_plus`;
+            case "private": return `VRChat_permission_private`;
+            case "group": return `VRChat_permission_group`;
+        }
     }
 
     private renderExifData(exifData: ExifData): JSX.Element {

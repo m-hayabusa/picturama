@@ -223,6 +223,8 @@ export interface MetaData {
     tags:          string[]
     worldId?:      string
     worldName?:    string
+    organizer?:    string
+    permission?:   'private' | 'private+' | 'friends' | 'hidden' | 'group' | 'public'
 }
 
 
